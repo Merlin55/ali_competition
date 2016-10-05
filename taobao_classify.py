@@ -3,26 +3,26 @@ import pandas as pd
 from sklearn.naive_bayes import MultinomialNB
 
 
-#ÑµÁ·²¢¼ÆËã×¼È·ÂÊ path£ºÊı¾İÎÄ¼şµØÖ·    rate£ºadaboostÑ§Ï°ÂÊ
+# training and calculate the precision   path: the location of data    rateï¼š learing rate of adaboost
 def train_test(path, rate):
     data = pd.read_csv(path)
-    data_train = data.iloc[:, :-1]   #È¡ÊôĞÔ
-    type = data.iloc[:, -1]   #È¡Àà±êÇ©
+    data_train = data.iloc[:, :-1]   #get attribute
+    type = data.iloc[:, -1]   #get label
     adaboost = AdaBoostClassifier(n_estimators=500, learning_rate=rate, algorithm='SAMME.R', random_state=None)
-    model = adaboost.fit(data_train.iloc[:80000], type.iloc[:80000])   #Ç°80000ĞĞ×÷ÎªÑµÁ·¼¯£¬Ê£ÏÂµÄ×÷Îª²âÊÔ¼¯£¬ÓÃÑµÁ·¼¯ÑµÁ·Ä£ĞÍ
-    return model.score(data_train.iloc[80000:], type.iloc[80000:])   #¼ÆËãÔÚ²âÊÔ¼¯ÉÏµÄ×¼È·ÂÊ
+    model = adaboost.fit(data_train.iloc[:80000], type.iloc[:80000])   #the first 80000 rows as training setï¼Œthe rest as testing 
+    return model.score(data_train.iloc[80000:], type.iloc[80000:])   #the precision rate on testing set
 
-#ÑµÁ·µÃµ½Ä£ĞÍ£¬ÊäÈë²âÊÔÊı¾İ£¬²¢½«Ô¤²â½á¹û³öÊä³öµ½ÎÄ¼ş   path_train£ºÑµÁ·Êı¾İÎÄ¼şµØÖ·   path_test£º²âÊÔÊı¾İÎÄ¼şµØÖ·
-#         result£º½á¹ûÊä³öÎÄ¼şµØÖ·       rate£ºadaboostÑ§Ï°ÂÊ
+#training model, input testing set, output results into files   path_trainï¼šthe locatio of training setè®­ç»ƒæ•°æ®æ–‡ä»¶åœ°å€   path_testï¼šthe location of testing set
+#         resultï¼šthe location of output file       rateï¼šlearing rate of adaboost
 
 def test_result(path_train, path_test, result_path, rate):
     data = pd.read_csv(path_train)
-    data_train = data.iloc[:, :-1]   #È¡ÊôĞÔ
-    type = data.iloc[:, -1]   #È¡Àà±êÇ©
+    data_train = data.iloc[:, :-1]   #get attribute
+    type = data.iloc[:, -1]   #get label
     data_test = pd.read_csv(path_test)
     adaboost = AdaBoostClassifier(n_estimators=500, learning_rate=rate, algorithm='SAMME.R', random_state=None)
-    model = adaboost.fit(data_train, type)  #ÑµÁ·Ä£ĞÍ
-    result = model.predict(data_test.iloc[:, 1:])   #Ô¤²â½á¹û
-    user_id = data_test.iloc[:, 0]   #½«ÏàÓ¦½á¹û¶ÔÓ¦µ½user_idÉÏ£¬Êä³ö
+    model = adaboost.fit(data_train, type)  #training model
+    result = model.predict(data_test.iloc[:, 1:])   #results
+    user_id = data_test.iloc[:, 0]   #output according to user_id
     d = pd.DataFrame({'a':user_id, 'b':result})
     d.to_csv(result_path)
