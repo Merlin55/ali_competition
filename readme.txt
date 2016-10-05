@@ -1,1 +1,1 @@
-阿里巴巴用户分类数据挖掘比赛，数据训练、测试脚本
+Alibaba User Classification  Challenge, scripts for data training and testing
